@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "aa8b3881-bec0-4825-8970-61867f7cb3b5": {
+      "ProjectGuid": "aa8b3881-bec0-4825-8970-61867f7cb3b5",
+      "DisplayName": "eCommerce.API",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
