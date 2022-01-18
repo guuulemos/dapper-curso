@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\conta\\Documents\\Workspace\\dapper-curso\\Aula 04\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj": {}
+    "C:\\Users\\conta\\Documents\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\conta\\Documents\\Workspace\\dapper-curso\\Aula 04\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj": {
+    "C:\\Users\\conta\\Documents\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\conta\\Documents\\Workspace\\dapper-curso\\Aula 04\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj",
+        "projectUniqueName": "C:\\Users\\conta\\Documents\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj",
         "projectName": "eCommerce.API",
-        "projectPath": "C:\\Users\\conta\\Documents\\Workspace\\dapper-curso\\Aula 04\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj",
+        "projectPath": "C:\\Users\\conta\\Documents\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj",
         "packagesPath": "C:\\Users\\conta\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\conta\\Documents\\Workspace\\dapper-curso\\Aula 04\\eCommerce.API\\eCommerce.API\\obj\\",
+        "outputPath": "C:\\Users\\conta\\Documents\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\conta\\AppData\\Roaming\\NuGet\\NuGet.Config",

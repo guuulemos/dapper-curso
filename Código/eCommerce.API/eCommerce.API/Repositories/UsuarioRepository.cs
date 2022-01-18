@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
+using System;
 
 namespace eCommerce.API.Repositories
 {
@@ -23,22 +24,89 @@ namespace eCommerce.API.Repositories
 
         public Usuario Get(int id)
         {
-            return _connection.QuerySingleOrDefault<Usuario>("SELECT * FROM Usuarios WHERE Id = @Id", new { Id = id });
+            // Relacionamento um para um usando LEFT JOIN
+            return _connection.Query<Usuario, Contato, Usuario>("SELECT * FROM USUARIOS AS U LEFT JOIN Contatos C ON C.UsuarioId = U.Id WHERE U.Id = @Id",
+                (usuario, contato) => 
+                {
+                    usuario.Contato = contato;
+                    return usuario;
+                },
+                new {Id = id}
+            ).FirstOrDefault();
         }
 
         public void Insert(Usuario usuario)
         {
-            string sql = "INSERT INTO Usuarios(Nome, Email, Sexo, RG, Cpf, NomeMae, SituacaoCadastro, DataCadastro) VALUES (@Nome, @Email, @Sexo, @RG, @Cpf, @NomeMae, @SituacaoCadastro, @DataCadastro); SELECT CAST(SCOPE_IDENTITY() AS INT);";
+            _connection.Open();
 
-            usuario.Id = _connection.Query<int>(sql, usuario).Single();
+            // Caso ocorra algum erro em uma das transações, o transaction vai cancelar tudo
+            var transaction = _connection.BeginTransaction();
+
+            try
+            {
+                string sqlUsuario = "INSERT INTO Usuarios(Nome, Email, Sexo, RG, Cpf, NomeMae, SituacaoCadastro, DataCadastro) VALUES (@Nome, @Email, @Sexo, @RG, @Cpf, @NomeMae, @SituacaoCadastro, @DataCadastro); SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                usuario.Id = _connection.Query<int>(sqlUsuario, usuario, transaction).Single();
+
+                if (usuario.Contato != null)
+                {
+                    usuario.Contato.UsuarioId = usuario.Id;
+                    string sqlContato = "INSERT INTO Contatos(UsuarioId, Telefone, Celular) VALUES (@UsuarioId, @Telefone, @Celular); SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    usuario.Contato.Id = _connection.Query<int>(sqlContato, usuario.Contato, transaction).Single();
+                }
+
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    transaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Ops, parece que algo deu errado! Tente novamente.");
+                }
+            }
+            finally
+            {
+                _connection.Close();
+            }
         }
 
         public void Update(Usuario usuario)
         {
-            string sql = "UPDATE Usuarios SET Nome = @Nome, Email = @Email, Sexo = @Sexo, RG = @RG, Cpf = @Cpf, NomeMae = @NomeMae, SituacaoCadastro = @SituacaoCadastro, DataCadastro = @DataCadastro WHERE Id = @Id";
+            _connection.Open();
 
-            // Usamos o execute quando não queremos retornar nada
-            _connection.Execute(sql, usuario);
+            var transaction = _connection.BeginTransaction();
+
+            try
+            {
+                string sqlUsuario = "UPDATE Usuarios SET Nome = @Nome, Email = @Email, Sexo = @Sexo, RG = @RG, Cpf = @Cpf, NomeMae = @NomeMae, SituacaoCadastro = @SituacaoCadastro, DataCadastro = @DataCadastro WHERE Id = @Id";
+                _connection.Execute(sqlUsuario, usuario, transaction);
+
+                if (usuario.Contato != null)
+                {
+                    string sqlContato = "UPDATE Contatos SET UsuarioId = @UsuarioId, Telefone = @Telefone, Celular = @Celular WHERE Id = @Id";
+                    _connection.Execute(sqlContato, usuario.Contato, transaction);
+                }
+
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    transaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Ops, parece que algo deu errado! Tente novamente.");
+                }
+            }
+            finally
+            {
+                _connection.Close();
+            }
         }
 
         public void Delete(int id)
