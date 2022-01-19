@@ -18,14 +18,70 @@ namespace eCommerce.API.Repositories
 
         public List<Usuario> Get()
         {
+            List<Usuario> usuarios = new List<Usuario>();
+
+            string sql = "SELECT * FROM Usuarios as U LEFT JOIN Contatos C ON C.UsuarioId = U.Id LEFT JOIN EnderecosEntrega EE ON EE.UsuarioId = U.Id";
+
             // Usamos o query quando queremos retornar algo
-            return _connection.Query<Usuario>("SELECT * FROM Usuarios").ToList();
+            // Relacionamento um para muitos
+            _connection.Query<Usuario, Contato, EnderecoEntrega, Usuario>(sql, (usuario, contato, enderecoEntrega) => {
+
+                // Evita duplicidade
+                if (usuarios.SingleOrDefault(a => a.Id == usuario.Id) == null )
+                {
+                    usuario.EnderecosEntrega = new List<EnderecoEntrega>();
+                    usuario.Contato = contato;
+                    usuarios.Add(usuario);
+                }
+                else
+                {
+                    usuario = usuarios.SingleOrDefault(a => a.Id == usuario.Id);
+                }
+
+                usuario.EnderecosEntrega.Add(enderecoEntrega);
+
+                return usuario;
+            });
+
+            // Aqui vamos retornar os usuarios com seus contatos e endereços
+            return usuarios;
         }
 
         public Usuario Get(int id)
         {
+            List<Usuario> usuarios = new List<Usuario>();
+
+            string sql = "SELECT * FROM Usuarios as U LEFT JOIN Contatos C ON C.UsuarioId = U.Id LEFT JOIN EnderecosEntrega EE ON EE.UsuarioId = U.Id WHERE U.Id = @Id";
+
+            // Usamos o query quando queremos retornar algo
+            // Relacionamento um para muitos
+            _connection.Query<Usuario, Contato, EnderecoEntrega, Usuario>(sql, (usuario, contato, enderecoEntrega) => {
+
+                // Evita duplicidade
+                if (usuarios.SingleOrDefault(a => a.Id == usuario.Id) == null)
+                {
+                    usuario.EnderecosEntrega = new List<EnderecoEntrega>();
+                    usuario.Contato = contato;
+                    usuarios.Add(usuario);
+                }
+                else
+                {
+                    usuario = usuarios.SingleOrDefault(a => a.Id == usuario.Id);
+                }
+
+                usuario.EnderecosEntrega.Add(enderecoEntrega);
+
+                return usuario;
+            }, new { Id = id });
+
+            // Aqui vamos retornar os usuarios com seus contatos e endereços
+            return usuarios.SingleOrDefault();
+        }
+
+        /* public Usuario Get(int id)
+        {
             // Relacionamento um para um usando LEFT JOIN
-            return _connection.Query<Usuario, Contato, Usuario>("SELECT * FROM USUARIOS AS U LEFT JOIN Contatos C ON C.UsuarioId = U.Id WHERE U.Id = @Id",
+            return _connection.Query<Usuario, Contato, Usuario>("SELECT * FROM USUARIOS as U LEFT JOIN Contatos C ON C.UsuarioId = U.Id WHERE U.Id = @Id",
                 (usuario, contato) => 
                 {
                     usuario.Contato = contato;
@@ -33,7 +89,7 @@ namespace eCommerce.API.Repositories
                 },
                 new {Id = id}
             ).FirstOrDefault();
-        }
+        } */
 
         public void Insert(Usuario usuario)
         {
@@ -52,6 +108,16 @@ namespace eCommerce.API.Repositories
                     usuario.Contato.UsuarioId = usuario.Id;
                     string sqlContato = "INSERT INTO Contatos(UsuarioId, Telefone, Celular) VALUES (@UsuarioId, @Telefone, @Celular); SELECT CAST(SCOPE_IDENTITY() AS INT);";
                     usuario.Contato.Id = _connection.Query<int>(sqlContato, usuario.Contato, transaction).Single();
+                }
+
+                if (usuario.EnderecosEntrega != null && usuario.EnderecosEntrega.Count > 0)
+                {
+                    foreach (var enderecoEntrega in usuario.EnderecosEntrega)
+                    {
+                        enderecoEntrega.UsuarioId = usuario.Id;
+                        string sqlEndereco = "INSERT INTO EnderecosEntrega(UsuarioId, NomeEndereco, CEP, Estado, Cidade, Bairro, Endereco, Numero, Complemento) VALUES (@UsuarioId, @NomeEndereco, @CEP, @Estado, @Cidade, @Bairro, @Endereco, @Numero, @Complemento); SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                        enderecoEntrega.Id = _connection.Query<int>(sqlEndereco, enderecoEntrega, transaction).Single();
+                    }
                 }
 
                 transaction.Commit();
@@ -88,6 +154,19 @@ namespace eCommerce.API.Repositories
                 {
                     string sqlContato = "UPDATE Contatos SET UsuarioId = @UsuarioId, Telefone = @Telefone, Celular = @Celular WHERE Id = @Id";
                     _connection.Execute(sqlContato, usuario.Contato, transaction);
+                }
+
+                string sqlDeletarEnderecosEntrega = "DELETE FROM EnderecosEntrega WHERE UsuarioId = @Id";
+                _connection.Execute(sqlDeletarEnderecosEntrega, usuario, transaction);
+
+                if (usuario.EnderecosEntrega != null && usuario.EnderecosEntrega.Count > 0)
+                {
+                    foreach (var enderecoEntrega in usuario.EnderecosEntrega)
+                    {
+                        enderecoEntrega.UsuarioId = usuario.Id;
+                        string sqlEndereco = "INSERT INTO EnderecosEntrega(UsuarioId, NomeEndereco, CEP, Estado, Cidade, Bairro, Endereco, Numero, Complemento) VALUES (@UsuarioId, @NomeEndereco, @CEP, @Estado, @Cidade, @Bairro, @Endereco, @Numero, @Complemento); SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                        enderecoEntrega.Id = _connection.Query<int>(sqlEndereco, enderecoEntrega, transaction).Single();
+                    }
                 }
 
                 transaction.Commit();
