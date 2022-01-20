@@ -20,6 +20,48 @@ namespace eCommerce.API.Repositories
         {
             List<Usuario> usuarios = new List<Usuario>();
 
+            string sql = "SELECT U.*, C.*, EE.*, D.* FROM Usuarios as U LEFT JOIN Contatos C ON C.UsuarioId = U.Id LEFT JOIN EnderecosEntrega EE ON EE.UsuarioId = U.Id LEFT JOIN UsuariosDepartamentos UD ON UD.UsuarioId = U.Id LEFT JOIN Departamentos D ON UD.DepartamentoId = D.Id";
+
+            // Usamos o query quando queremos retornar algo
+            // Relacionamento muitos para muitos
+            _connection.Query<Usuario, Contato, EnderecoEntrega, Departamento, Usuario>(sql, (usuario, contato, enderecoEntrega, departamento) => {
+
+                // Verificação do usuário (evitar duplicidade)
+                if (usuarios.SingleOrDefault(a => a.Id == usuario.Id) == null)
+                {
+                    usuario.Departamentos = new List<Departamento>();
+                    usuario.EnderecosEntrega = new List<EnderecoEntrega>();
+                    usuario.Contato = contato;
+                    usuarios.Add(usuario);
+                }
+                else
+                {
+                    usuario = usuarios.SingleOrDefault(a => a.Id == usuario.Id);
+                }
+
+                // Verificação do endereço de entrega (evitar duplicidade)
+                if (usuario.EnderecosEntrega.SingleOrDefault(a => a.Id == enderecoEntrega.Id) == null) 
+                {
+                    usuario.EnderecosEntrega.Add(enderecoEntrega);
+                }
+               
+                // Verificação do departamento (evitar duplicidade)
+                if (usuario.Departamentos.SingleOrDefault(a => a.Id == departamento.Id) == null)
+                {
+                    usuario.Departamentos.Add(departamento);
+                }
+
+                return usuario;
+            });
+
+            // Aqui vamos retornar os usuarios com seus contatos e endereços
+            return usuarios;
+        }
+
+        /* public List<Usuario> Get()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+
             string sql = "SELECT * FROM Usuarios as U LEFT JOIN Contatos C ON C.UsuarioId = U.Id LEFT JOIN EnderecosEntrega EE ON EE.UsuarioId = U.Id";
 
             // Usamos o query quando queremos retornar algo
@@ -45,7 +87,7 @@ namespace eCommerce.API.Repositories
 
             // Aqui vamos retornar os usuarios com seus contatos e endereços
             return usuarios;
-        }
+        } */
 
         public Usuario Get(int id)
         {
