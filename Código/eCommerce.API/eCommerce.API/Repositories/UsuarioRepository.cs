@@ -40,13 +40,13 @@ namespace eCommerce.API.Repositories
                 }
 
                 // Verificação do endereço de entrega (evitar duplicidade)
-                if (usuario.EnderecosEntrega.SingleOrDefault(a => a.Id == enderecoEntrega.Id) == null) 
+                if (usuario.EnderecosEntrega.SingleOrDefault(a => a.Id == enderecoEntrega.Id) == null && enderecoEntrega != null) 
                 {
                     usuario.EnderecosEntrega.Add(enderecoEntrega);
                 }
                
                 // Verificação do departamento (evitar duplicidade)
-                if (usuario.Departamentos.SingleOrDefault(a => a.Id == departamento.Id) == null)
+                if (usuario.Departamentos.SingleOrDefault(a => a.Id == departamento.Id) == null && departamento != null)
                 {
                     usuario.Departamentos.Add(departamento);
                 }
