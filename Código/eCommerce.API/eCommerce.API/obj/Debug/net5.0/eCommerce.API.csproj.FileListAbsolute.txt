@@ -68,3 +68,4 @@ C:\Users\conta\Documents\Projetos\dapper-curso\Código\eCommerce.API\eCommerce.A
 C:\Users\conta\Documents\Projetos\dapper-curso\Código\eCommerce.API\eCommerce.API\obj\Debug\net5.0\ref\eCommerce.API.dll
 C:\Users\conta\Documents\Projetos\dapper-curso\Código\eCommerce.API\eCommerce.API\obj\Debug\net5.0\eCommerce.API.pdb
 C:\Users\conta\Documents\Projetos\dapper-curso\Código\eCommerce.API\eCommerce.API\obj\Debug\net5.0\eCommerce.API.genruntimeconfig.cache
+C:\Users\conta\Documents\Projetos\dapper-curso\Código\eCommerce.API\eCommerce.API\bin\Debug\net5.0\Dapper.Contrib.dll
