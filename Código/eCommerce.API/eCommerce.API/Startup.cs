@@ -1,3 +1,5 @@
+using Dapper.FluentMap;
+using eCommerce.API.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +33,11 @@ namespace eCommerce.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "eCommerce.API", Version = "v1" });
+            });
+
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new UsuarioTwoMap());
             });
         }
 

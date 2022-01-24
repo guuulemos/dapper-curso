@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "SzjhRzz91CEUCy3cAdE7Ck26Aez6s4VUTnZbCzHilSGxIYyRPFZVOwUnWMEjVM2xtfkMBKFTvpM4QzyYJjHMnw==",
+  "dgSpecHash": "fravnJLXewAvUfBYehzgpEWhIpxIANcOhVb1gq1hJyTQ1EoAJDBlZRe/4hV31vqFguSnnefF4BJ/FRiXW2CetA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\conta\\Documents\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj",
+  "projectFilePath": "C:\\Users\\conta\\Documents\\Gustavo Lemos\\Projetos\\dapper-curso\\Código\\eCommerce.API\\eCommerce.API\\eCommerce.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\conta\\.nuget\\packages\\dapper\\2.0.90\\dapper.2.0.90.nupkg.sha512",
     "C:\\Users\\conta\\.nuget\\packages\\dapper.contrib\\2.0.78\\dapper.contrib.2.0.78.nupkg.sha512",
+    "C:\\Users\\conta\\.nuget\\packages\\dapper.fluentmap\\2.0.0\\dapper.fluentmap.2.0.0.nupkg.sha512",
     "C:\\Users\\conta\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\conta\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\conta\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",

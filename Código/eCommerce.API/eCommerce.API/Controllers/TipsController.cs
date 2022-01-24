@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using eCommerce.API.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
-using Dapper;
-using eCommerce.API.Models;
 using System.Linq;
 
 namespace eCommerce.API.Controllers
@@ -59,6 +59,22 @@ namespace eCommerce.API.Controllers
         public IActionResult StoredGet(int id)
         {
             var usuarios = _connection.Query<Usuario>("SelecionarUsuario", new { Id = id }, commandType: CommandType.StoredProcedure);
+            return Ok(usuarios);
+        }
+
+        [HttpGet("MapperOne/Usuarios")]
+        public IActionResult MapperOne()
+        {
+            // Primeira solução - Modificar a query
+            var usuarios = _connection.Query<UsuarioTwo>("SELECT Id Codigo, Nome NomeCompleto, Email, Sexo, RG, CPF, NomeMae NomeCompletoMae, SituacaoCadastro Situacao, DataCadastro FROM Usuarios");
+            return Ok(usuarios);
+        }
+
+        [HttpGet("MapperTwo/Usuarios")]
+        public IActionResult MapperTwo()
+        {
+            // Segunda solução - Mapeamento por meio do FluentMap
+            var usuarios = _connection.Query<UsuarioTwo>("SELECT * FROM Usuarios");
             return Ok(usuarios);
         }
     }
