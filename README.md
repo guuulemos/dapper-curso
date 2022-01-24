@@ -1,2 +1,2 @@
-# dapper-curso
-Repositório dedicado para aprender o micro-orm dapper
+# Micro-ORM Dapper
+Repositório dedicado para aprender o Dapper :cowboy_hat_face:
